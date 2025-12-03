@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Lelang Aset IT</title>
+
+    <!-- Meta Tags -->
+    <meta name="description" content="Katalog lelang aset IT dengan harga kompetitif. Macbook, Lenovo, Acer, dan laptop berkualitas lainnya.">
+    <meta name="keywords" content="lelang laptop, laptop bekas, katalog IT, aset perusahaan, macbook, lenovo, acer">
+    <meta name="author" content="IT Auction Portal">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Katalog Lelang Aset IT">
+    <meta property="og:description" content="Temukan laptop berkualitas dengan harga terbaik.">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔨</text></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-soft': 'bounceSoft 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        bounceSoft: {
+                            '0%, 100%': { transform: 'translateY(-5%)' },
+                            '50%': { transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .pulse-button {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+            }
+        }
+
+        /* Loading dots animation */
+        .loading-dots span {
+            animation: blink 1.4s infinite both;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+            0%, 80%, 100% { opacity: 0; }
+            40% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="min-h-screen flex flex-col justify-center items-center p-4">
+        <!-- Logo Section -->
+        <div class="text-center mb-8 animate-fade-in">
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-white rounded-3xl shadow-2xl mb-6 floating">
+                <i class="fa-solid fa-gavel text-4xl text-gradient"></i>
+            </div>
+            <h1 class="text-5xl font-black text-white mb-2">
+                IT Auction <span class="text-yellow-300">Portal</span>
+            </h1>
+            <p class="text-white/80 text-lg">Katalog Lelang Aset IT Terpercaya</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="glass-effect rounded-3xl shadow-2xl p-8 max-w-lg w-full animate-slide-up">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Selamat Datang!</h2>
+                <p class="text-gray-600">Pilih akses yang Anda inginkan:</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Catalog Button -->
+                <a href="kataloglelang.html"
+                   class="card-hover group bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg pulse-button">
+                    <i class="fa-solid fa-store text-xl group-hover:rotate-12 transition-transform"></i>
+                    <span class="text-lg">Lihat Katalog Produk</span>
+                </a>
+
+                <!-- Admin Button -->
+                <a href="admin/login.html"
+                   class="card-hover bg-white border-2 border-gray-200 text-gray-700 font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow hover:shadow-lg hover:border-indigo-500 hover:text-indigo-600 transition-all">
+                    <i class="fa-solid fa-lock text-xl group-hover:rotate-12 transition-transform"></i>
+                    <span class="text-lg">Panel Administrator</span>
+                </a>
+            </div>
+
+            <!-- Info Section -->
+            <div class="mt-8 pt-8 border-t border-gray-200">
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div>
+                        <i class="fa-solid fa-box text-2xl text-indigo-600 mb-2"></i>
+                        <p class="text-2xl font-bold text-gray-800" id="productCount">13</p>
+                        <p class="text-sm text-gray-500">Produk Tersedia</p>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-tag text-2xl text-green-600 mb-2"></i>
+                        <p class="text-2xl font-bold text-gray-800" id="auctionCount">7</p>
+                        <p class="text-sm text-gray-500">Sedang Dilelang</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="mt-8 text-center">
+                <p class="text-sm text-gray-500 mb-2">Butuh bantuan? Hubungi kami:</p>
+                <a href="https://wa.me/6281553821808" target="_blank"
+                   class="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium transition">
+                    <i class="fab fa-whatsapp text-xl"></i>
+                    <span>0815-5382-1808</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-white/60 text-sm">
+            <p>&copy; 2024 IT Auction Portal. All rights reserved.</p>
+            <p class="mt-1">
+                <i class="fa-solid fa-code"></i>
+                Built with
+                <i class="fa-solid fa-heart text-red-400 mx-1"></i>
+                for Wijaya Inovasi
+            </p>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
+                <i class="fa-solid fa-gavel text-2xl text-indigo-600 animate-bounce-soft"></i>
+            </div>
+            <p class="text-gray-600 font-medium loading-dots">
+                Memuat<span>.</span><span>.</span><span>.</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Simple database mock to get counts
+        const databaseInfo = {
+            totalProducts: 13,
+            auctionProducts: 7
+        };
+
+        // Update counts
+        document.getElementById('productCount').textContent = databaseInfo.totalProducts;
+        document.getElementById('auctionCount').textContent = databaseInfo.auctionProducts;
+
+        // Hide loading screen after page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    loadingScreen.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 500);
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '2') {
+                const links = document.querySelectorAll('a[href]');
+                const index = parseInt(e.key) - 1;
+                if (links[index]) {
+                    links[index].click();
+                }
+            }
+        });
+
+        // Add hover effect to buttons
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('mouseenter', (e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+            });
+
+            link.addEventListener('mouseleave', (e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+            });
+        });
+
+        // Prefetch pages for faster navigation
+        const prefetchLinks = ['kataloglelang.html', 'admin/login.html'];
+        prefetchLinks.forEach(href => {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = href;
+            document.head.appendChild(link);
+        });
+
+        // Service Worker registration for offline support (optional)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+    </script>
+</body>
+</html>

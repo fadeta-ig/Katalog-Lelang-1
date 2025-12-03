@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Data Massal - Katalog Lelang</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .json-preview {
+            background: #1e293b;
+            color: #e2e8f0;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        .json-key { color: #7dd3fc; }
+        .json-string { color: #86efac; }
+        .json-number { color: #fbbf24; }
+        .json-boolean { color: #c084fc; }
+        .json-null { color: #94a3b8; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="text-gray-600 hover:text-gray-900">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900">Import Data Massal</h1>
+                </div>
+                <button onclick="window.location.href='products.html'" class="text-gray-600 hover:text-gray-900">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Import Instructions -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <div class="flex items-start gap-3">
+                <i class="fa-solid fa-info-circle text-blue-600 mt-1"></i>
+                <div>
+                    <h3 class="font-semibold text-blue-900 mb-2">Petunjuk Import Data</h3>
+                    <ol class="list-decimal list-inside text-sm text-blue-800 space-y-1">
+                        <li>Unduh template JSON dengan menekan tombol "Download Template" di bawah</li>
+                        <li>Isi data produk sesuai format yang telah disediakan</li>
+                        <li>Pastikan semua field required diisi (type, model, spec, condition, user, pic, status, priceOriginal, priceAuction)</li>
+                        <li>Status yang tersedia: "Lelang", "Peremajaan", "Terjual", "Draft"</li>
+                        <li>Upload file JSON yang telah diisi menggunakan tombol "Pilih File"</li>
+                        <li>Review data sebelum melakukan import dengan menekan "Preview Data"</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Template -->
+        <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Template JSON</h2>
+            <button onclick="downloadTemplate()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                <i class="fa-solid fa-download mr-2"></i>Download Template
+            </button>
+        </div>
+
+        <!-- File Upload -->
+        <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Upload File JSON</h2>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors">
+                <input type="file" id="jsonFile" accept=".json" class="hidden" onchange="handleFileSelect(event)">
+                <label for="jsonFile" class="cursor-pointer">
+                    <i class="fa-solid fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
+                    <p class="text-gray-600 mb-2">Klik untuk memilih file JSON</p>
+                    <p class="text-sm text-gray-500">atau drag and drop file ke sini</p>
+                </label>
+                <div id="fileName" class="mt-4 text-sm text-gray-600"></div>
+            </div>
+
+            <div class="mt-4 flex gap-3">
+                <button onclick="previewData()" id="previewBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <i class="fa-solid fa-eye mr-2"></i>Preview Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Preview -->
+        <div id="previewSection" class="hidden">
+            <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Preview Data</h2>
+                    <span id="dataCount" class="text-sm text-gray-600"></span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Spesifikasi</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kondisi</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Awal</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Lelang</th>
+                            </tr>
+                        </thead>
+                        <tbody id="previewTableBody" class="bg-white divide-y divide-gray-200">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Confirm Import Section -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-exclamation-triangle text-yellow-600 mt-0.5"></i>
+                            <div class="text-sm text-yellow-800">
+                                <p class="font-semibold mb-1">Perhatian!</p>
+                                <p>Data akan ditambahkan ke database. Pastikan semua data sudah benar sebelum melanjutkan.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 justify-end">
+                        <button onclick="cancelImport()" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fa-solid fa-times mr-2"></i>Batal
+                        </button>
+                        <button onclick="confirmImport()" id="confirmImportBtn" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fa-solid fa-check mr-2"></i>Confirm Import
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Status -->
+        <div id="importStatus" class="hidden">
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Status Import</h2>
+                <div id="statusContent"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-check text-green-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Import Berhasil!</h3>
+            <p id="successMessage" class="text-gray-600 mb-6"></p>
+            <button onclick="closeSuccessModal()" class="bg-brand-600 text-white px-6 py-2 rounded-lg hover:bg-brand-700">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <!-- Include Database -->
+    <script src="../database/db.js"></script>
+
+    <script>
+        let jsonData = [];
+        let db;
+
+        // Initialize database
+        async function init() {
+            try {
+                db = await productDB.init();
+            } catch (error) {
+                console.error('Failed to initialize database:', error);
+                alert('Gagal memuat database');
+            }
+        }
+
+        // Download template
+        function downloadTemplate() {
+            const template = [
+                {
+                    "type": "Macbook",
+                    "model": "Macbook Pro 13\" 2020",
+                    "spec": "Intel Core i5 2,0 GHz | RAM 8GB | SSD 256GB",
+                    "condition": "Normal",
+                    "user": "John Doe",
+                    "pic": "GA (Brankas)",
+                    "status": "Lelang",
+                    "priceOriginal": 15000000,
+                    "priceAuction": 8000000,
+                    "images": []
+                },
+                {
+                    "type": "Laptop",
+                    "model": "Lenovo Thinkpad X1 Carbon",
+                    "spec": "Intel Core i7 2,6 GHz | RAM 16GB | SSD 512GB",
+                    "condition": "Baterai Rusak",
+                    "user": "Jane Smith",
+                    "pic": "Admin Marketplace",
+                    "status": "Peremajaan",
+                    "priceOriginal": 25000000,
+                    "priceAuction": 12000000,
+                    "images": []
+                }
+            ];
+
+            const blob = new Blob([JSON.stringify(template, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'template_import_produk.json';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Handle file selection
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('fileName').innerHTML = `
+                    <i class="fa-solid fa-file-alt mr-2"></i>${file.name} (${(file.size / 1024).toFixed(2)} KB)
+                `;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        jsonData = JSON.parse(e.target.result);
+                        document.getElementById('previewBtn').disabled = false;
+                    } catch (error) {
+                        alert('File JSON tidak valid. Silakan periksa format file.');
+                        document.getElementById('fileName').innerHTML = '';
+                        document.getElementById('previewBtn').disabled = true;
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Preview data
+        function previewData() {
+            if (jsonData.length === 0) {
+                alert('Tidak ada data untuk di-preview');
+                return;
+            }
+
+            const tbody = document.getElementById('previewTableBody');
+            tbody.innerHTML = '';
+
+            jsonData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${item.id || '-'}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${item.type || '-'}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${item.model || '-'}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900 max-w-xs truncate" title="${item.spec}">${item.spec || '-'}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full ${getConditionClass(item.condition)}">
+                            ${item.condition || '-'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusClass(item.status)}">
+                            ${item.status || '-'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${formatRupiah(item.priceOriginal)}</td>
+                    <td class="px-4 py-3 text-sm font-medium text-brand-600">${formatRupiah(item.priceAuction)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('dataCount').textContent = `${jsonData.length} produk`;
+            document.getElementById('previewSection').classList.remove('hidden');
+        }
+
+        // Confirm import dialog
+        function confirmImport() {
+            // Add confirmation dialog
+            if (confirm(`Apakah Anda yakin ingin mengimport ${jsonData.length} produk ke database?`)) {
+                executeImport();
+            }
+        }
+
+        // Cancel import
+        function cancelImport() {
+            if (confirm('Apakah Anda yakin ingin membatalkan import?')) {
+                // Reset everything
+                jsonData = [];
+                document.getElementById('jsonFile').value = '';
+                document.getElementById('fileName').innerHTML = '';
+                document.getElementById('previewSection').classList.add('hidden');
+                document.getElementById('importStatus').classList.add('hidden');
+                document.getElementById('previewBtn').disabled = true;
+                // Reset confirm button if it exists
+                const confirmBtn = document.getElementById('confirmImportBtn');
+                if (confirmBtn) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="fa-solid fa-check mr-2"></i>Confirm Import';
+                }
+            }
+        }
+
+        // Execute actual import
+        async function executeImport() {
+            if (jsonData.length === 0) {
+                alert('Tidak ada data untuk di-import');
+                return;
+            }
+
+            // Disable confirm button during import
+            document.getElementById('confirmImportBtn').disabled = true;
+            document.getElementById('confirmImportBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Importing...';
+
+            const statusContent = document.getElementById('statusContent');
+            statusContent.innerHTML = '<div class="text-center"><i class="fa-solid fa-spinner fa-spin text-2xl text-blue-600"></i><p class="mt-2">Sedang mengimport data...</p></div>';
+            document.getElementById('importStatus').classList.remove('hidden');
+
+            // Scroll to status section
+            document.getElementById('importStatus').scrollIntoView({ behavior: 'smooth' });
+
+            let successCount = 0;
+            let errorCount = 0;
+            let errors = [];
+
+            for (let i = 0; i < jsonData.length; i++) {
+                const item = jsonData[i];
+
+                // Validate required fields
+                const requiredFields = ['type', 'model', 'spec', 'condition', 'user', 'pic', 'status', 'priceOriginal', 'priceAuction'];
+                const missingFields = requiredFields.filter(field => !item[field]);
+
+                if (missingFields.length > 0) {
+                    errors.push(`Baris ${i + 1}: Field yang hilang - ${missingFields.join(', ')}`);
+                    errorCount++;
+                    continue;
+                }
+
+                try {
+                    await productDB.addProduct({
+                        type: item.type,
+                        model: item.model,
+                        spec: item.spec,
+                        condition: item.condition,
+                        user: item.user,
+                        pic: item.pic,
+                        status: item.status,
+                        priceOriginal: Number(item.priceOriginal),
+                        priceAuction: Number(item.priceAuction),
+                        images: item.images || []
+                    });
+                    successCount++;
+                } catch (error) {
+                    errors.push(`Baris ${i + 1}: ${error.message}`);
+                    errorCount++;
+                }
+            }
+
+            // Show status
+            statusContent.innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-green-50 rounded-lg p-4">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-green-600"></i>
+                                <span class="font-semibold text-green-900">Berhasil</span>
+                            </div>
+                            <p class="text-2xl font-bold text-green-600 mt-1">${successCount}</p>
+                        </div>
+                        <div class="bg-red-50 rounded-lg p-4">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-times-circle text-red-600"></i>
+                                <span class="font-semibold text-red-900">Gagal</span>
+                            </div>
+                            <p class="text-2xl font-bold text-red-600 mt-1">${errorCount}</p>
+                        </div>
+                    </div>
+                    ${errors.length > 0 ? `
+                        <div class="bg-red-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-red-900 mb-2">Detail Error:</h4>
+                            <ul class="text-sm text-red-800 space-y-1 max-h-40 overflow-y-auto">
+                                ${errors.slice(0, 10).map(error => `<li>• ${error}</li>`).join('')}
+                                ${errors.length > 10 ? `<li>• ... dan ${errors.length - 10} error lainnya</li>` : ''}
+                            </ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            // Show success modal if all data imported successfully
+            if (errorCount === 0) {
+                setTimeout(() => {
+                    document.getElementById('successMessage').textContent = `${successCount} produk berhasil diimport ke database.`;
+                    document.getElementById('successModal').classList.remove('hidden');
+                }, 1500);
+            } else {
+                // Re-enable button if there were errors
+                document.getElementById('confirmImportBtn').disabled = false;
+                document.getElementById('confirmImportBtn').innerHTML = '<i class="fa-solid fa-check mr-2"></i>Confirm Import';
+            }
+        }
+
+        // Helper functions
+        function getConditionClass(condition) {
+            const c = condition.toLowerCase();
+            if (c === 'normal') return 'bg-green-100 text-green-800';
+            if (c.includes('install') || c.includes('lecet')) return 'bg-yellow-100 text-yellow-800';
+            return 'bg-red-100 text-red-800';
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Lelang': return 'bg-green-100 text-green-800';
+                case 'Peremajaan': return 'bg-yellow-100 text-yellow-800';
+                case 'Terjual': return 'bg-blue-100 text-blue-800';
+                case 'Draft': return 'bg-gray-100 text-gray-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(number || 0);
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            window.location.href = 'products.html';
+        }
+
+        // Drag and drop
+        const dropZone = document.querySelector('label[for="jsonFile"]').parentElement;
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-blue-500', 'bg-blue-50');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/json') {
+                document.getElementById('jsonFile').files = files;
+                handleFileSelect({ target: { files: files } });
+            } else {
+                alert('Silakan upload file JSON');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
