@@ -280,35 +280,19 @@
                     });
                 } else {
                     console.error('Firebase productDB not initialized');
-                    useFallbackData();
+                    showEmptyState();
                 }
             } catch (error) {
                 console.error('Error loading products from Firebase:', error);
-                // Show fallback data if database fails
-                useFallbackData();
+                showEmptyState();
             }
         }
 
-        // Fallback data if database fails
-        function useFallbackData() {
-            allProducts = [
-                { id: 1, type: "Macbook", model: "Macbook Pro 13\" 2017 Grayspace", spec: "Intel Core i5 2,5 GHz | RAM 8GB | SSD 256GB", condition: "Normal", user: "Ex Yunus", pic: "GA (Brankas)", status: "Lelang", priceOriginal: 7200000, priceAuction: 4000000 },
-                { id: 3, type: "Laptop", model: "Lenovo Ideapad Slim 1 Gray", spec: "AMD Athlon Silver | RAM 8GB | SSD 256GB", condition: "Butuh Install Ulang", user: "Lilin Indah", pic: "Lilin Indah (Used)", status: "Peremajaan", priceOriginal: 5600000, priceAuction: 2800000 },
-                { id: 4, type: "Laptop", model: "Lenovo Ideapad Slim 1 Gray", spec: "AMD Athlon Silver | RAM 8GB | SSD 256GB", condition: "Butuh Install Ulang", user: "Ratri Yuliana", pic: "Ratri Yuliana (Used)", status: "Peremajaan", priceOriginal: 5600000, priceAuction: 2800000 },
-                { id: 5, type: "Laptop", model: "Lenovo Ideapad Slim 1 Gray", spec: "AMD Athlon Silver | RAM 8GB | SSD 256GB", condition: "Butuh Install Ulang", user: "Ricky P", pic: "Ricky P (Used)", status: "Peremajaan", priceOriginal: 5600000, priceAuction: 2800000 },
-                { id: 6, type: "Laptop", model: "Lenovo Ideapad Slim 1 Gray", spec: "AMD Athlon Silver | RAM 8GB | SSD 256GB", condition: "Keyboard Rusak", user: "Aryo", pic: "GA (Brankas)", status: "Peremajaan", priceOriginal: 5600000, priceAuction: 2800000 },
-                { id: 7, type: "Laptop", model: "Lenovo Ideapad Slim 1 Gray", spec: "AMD Athlon Silver | RAM 8GB | SSD 256GB", condition: "Butuh Install Ulang", user: "Ex Pak Syahril", pic: "Syahril (Used)", status: "Lelang", priceOriginal: 5600000, priceAuction: 2500000 },
-                { id: 8, type: "Laptop", model: "Acer Aspire 3 Gray", spec: "AMD Athlon Silver | RAM 12GB | SSD 256GB", condition: "Normal", user: "Aryo", pic: "Aryo (Used)", status: "Lelang", priceOriginal: 3702000, priceAuction: 2082375 },
-                { id: 9, type: "Laptop", model: "Acer Aspire 3 Gray", spec: "AMD Athlon Silver | RAM 12GB | SSD 256GB", condition: "Normal", user: "Rafel Sutan N", pic: "Rafel Sutan (Used)", status: "Peremajaan", priceOriginal: 3702000, priceAuction: 2082375 },
-                { id: 10, type: "Laptop", model: "Acer Aspire 3 Gray", spec: "AMD Radeon A4 | RAM 8GB | SSD 256GB", condition: "Body lecet, Normal", user: "Ex Aisyah Qurota", pic: "Admin Marketplace (Used)", status: "Lelang", priceOriginal: 3784000, priceAuction: 2128500 },
-                { id: 11, type: "Laptop", model: "Thinkpad T460 Black", spec: "Intel Core i5 | RAM 8GB | SSD 256GB", condition: "Baterai Rusak, Trackpad Rusak, LCD Berkedip", user: "Ex Regina", pic: "GA (Brankas)", status: "Lelang", priceOriginal: 3780000, priceAuction: 2205000 },
-                { id: 12, type: "Laptop", model: "Thinkpad T470 Black", spec: "Intel Core i5 | RAM 8GB | SSD 256GB", condition: "Frame Renggang, Baterai Rusak, Keyboard ada yang hilang", user: "Ex Doni", pic: "GA (Brankas)", status: "Lelang", priceOriginal: 4030000, priceAuction: 2350833 },
-                { id: 13, type: "Laptop", model: "Thinkpad X270 Black", spec: "Intel Core i5 | RAM 8GB | SSD 256GB", condition: "Baterai Rusak, Butuh Install Ulang", user: "Ex Jihan Luluk", pic: "GA (Brankas)", status: "Lelang", priceOriginal: 3700000, priceAuction: 2158333 }
-            ];
-
-            // Filter products with status 'Lelang' or 'Peremajaan' for catalog
-            lelangProducts = allProducts.filter(p => p.status === 'Lelang' || p.status === 'Peremajaan');
-            renderProducts(lelangProducts);
+        // Show empty state when no data available
+        function showEmptyState() {
+            allProducts = [];
+            lelangProducts = [];
+            renderProducts([]);
             setupEventListeners();
         }
 

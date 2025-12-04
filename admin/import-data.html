@@ -179,7 +179,13 @@
         // Initialize database
         async function init() {
             try {
-                db = await productDB.init();
+                // Check if productDB is available (from Firebase)
+                if (typeof productDB !== 'undefined') {
+                    console.log('Firebase productDB initialized');
+                } else {
+                    console.error('Firebase productDB not initialized');
+                    alert('Gagal memuat database');
+                }
             } catch (error) {
                 console.error('Failed to initialize database:', error);
                 alert('Gagal memuat database');

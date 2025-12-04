@@ -249,15 +249,15 @@
                     document.getElementById('productCount').textContent = totalProducts;
                     document.getElementById('auctionCount').textContent = auctionProducts;
                 } else {
-                    // Fallback to hardcoded values
-                    document.getElementById('productCount').textContent = '13';
-                    document.getElementById('auctionCount').textContent = '7';
+                    // Fallback to zero when Firebase not available
+                    document.getElementById('productCount').textContent = '0';
+                    document.getElementById('auctionCount').textContent = '0';
                 }
             } catch (error) {
                 console.error('Error loading counts:', error);
-                // Fallback to hardcoded values
-                document.getElementById('productCount').textContent = '13';
-                document.getElementById('auctionCount').textContent = '7';
+                // Fallback to zero when Firebase fails
+                document.getElementById('productCount').textContent = '0';
+                document.getElementById('auctionCount').textContent = '0';
             }
         }
 
