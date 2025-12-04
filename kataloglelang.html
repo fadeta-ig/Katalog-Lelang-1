@@ -383,7 +383,7 @@
                 };
 
                 card.innerHTML = `
-                    <div class="h-40 bg-slate-50 flex items-center justify-center border-b border-slate-100 relative group cursor-pointer" onclick="openModal(${item.id})">
+                    <div class="h-40 bg-slate-50 flex items-center justify-center border-b border-slate-100 relative group cursor-pointer" onclick="openModal('${item.firebaseId || item.id}')">
                         ${imageHtml}
                         ${item.status === 'Peremajaan' ? '<div class="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold">Peremajaan</div>' : ''}
                         <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -416,7 +416,7 @@
                                 <p class="text-xs text-slate-400 mb-0.5">${item.status === 'Lelang' ? 'Harga Lelang' : 'Estimasi Harga'}</p>
                                 <p class="text-lg font-bold ${item.status === 'Lelang' ? 'text-brand-600' : 'text-yellow-600'}">${formatRupiah(item.priceAuction)}</p>
                             </div>
-                            <button onclick="openModal(${item.id})" class="rounded-lg ${item.status === 'Lelang' ? 'bg-slate-900 hover:bg-slate-700' : 'bg-yellow-600 hover:bg-yellow-700'} px-3 py-2 text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+                            <button onclick="openModal('${item.firebaseId || item.id}')" class="rounded-lg ${item.status === 'Lelang' ? 'bg-slate-900 hover:bg-slate-700' : 'bg-yellow-600 hover:bg-yellow-700'} px-3 py-2 text-xs font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
                                 ${item.status === 'Lelang' ? 'Tawar' : 'Detail'}
                             </button>
                         </div>
@@ -455,8 +455,14 @@
   
         // 5. Modal Logic
         function openModal(id) {
-            const item = lelangProducts.find(i => i.id === id);
-            if (!item) return;
+            console.log('Opening modal with ID:', id);
+            const item = lelangProducts.find(i => i.firebaseId === id || i.id === id);
+            if (!item) {
+                console.error('Product not found with ID:', id);
+                console.error('Available products:', lelangProducts.map(p => ({ firebaseId: p.firebaseId, id: p.id, model: p.model })));
+                return;
+            }
+            console.log('Found product:', item);
 
             const specs = parseSpecs(item.spec);
             const conditionClass = getStatusColor(item.condition);
@@ -525,6 +531,7 @@
 
         // WhatsApp integration
         function sendWhatsApp(product) {
+            console.log('Sending WhatsApp for product:', product);
             const phoneNumber = '6281553821808'; // 081553821808 with country code
             const message = encodeURIComponent(
                 `Halo, saya tertarik dengan produk:\n\n` +
