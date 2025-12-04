@@ -14,8 +14,12 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Include database -->
-    <script src="../database/db.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script src="../database/firebase-config.js"></script>
 
     <script>
         tailwind.config = {
@@ -334,7 +338,7 @@
             try {
                 // Get product ID from URL
                 const urlParams = new URLSearchParams(window.location.search);
-                productId = parseInt(urlParams.get('id'));
+                productId = urlParams.get('id'); // Keep as string for Firebase key
 
                 if (!productId) {
                     showNotification('ID produk tidak ditemukan', 'error');
@@ -342,9 +346,14 @@
                     return;
                 }
 
-                db = await productDB.init();
-                await loadProduct();
-                setupFormListener();
+                // Check if productDB is available
+                if (typeof productDB !== 'undefined') {
+                    await loadProduct();
+                    setupFormListener();
+                } else {
+                    console.error('Firebase productDB not initialized');
+                    showNotification('Gagal memuat database', 'error');
+                }
             } catch (error) {
                 console.error('Failed to initialize:', error);
                 showNotification('Gagal memuat database', 'error');

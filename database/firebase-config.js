@@ -249,7 +249,14 @@ class FirebaseProductManager {
         if (!this.initialized) await this.init();
         const snapshot = await productsRef.once('value');
         const data = snapshot.val();
-        return data ? Object.values(data) : [];
+
+        if (!data) return [];
+
+        // Convert object to array and include Firebase ID
+        return Object.entries(data).map(([key, value]) => ({
+            ...value,
+            firebaseId: key
+        }));
     }
 
     // Get single product
@@ -311,7 +318,18 @@ class FirebaseProductManager {
         }
         productsRef.on('value', (snapshot) => {
             const data = snapshot.val();
-            callback(data ? Object.values(data) : []);
+
+            if (!data) {
+                callback([]);
+                return;
+            }
+
+            // Convert object to array and include Firebase ID
+            const products = Object.entries(data).map(([key, value]) => ({
+                ...value,
+                firebaseId: key
+            }));
+            callback(products);
         });
     }
 }

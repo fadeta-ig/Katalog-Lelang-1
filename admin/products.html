@@ -356,10 +356,10 @@
                         ${formatDate(product.created_at)}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button onclick="editProduct(${product.id})" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                        <button onclick="editProduct(${JSON.stringify(product).replace(/"/g, '&quot;')})" class="text-indigo-600 hover:text-indigo-900 mr-3">
                             <i class="fa-solid fa-edit"></i>
                         </button>
-                        <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900">
+                        <button onclick="deleteProduct(${JSON.stringify(product).replace(/"/g, '&quot;')})" class="text-red-600 hover:text-red-900">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -443,12 +443,15 @@
         }
 
         // Product actions
-        function editProduct(id) {
-            window.location.href = `edit-product.html?id=${id}`;
+        function editProduct(product) {
+            // Use firebaseId if available, otherwise use id
+            const productId = product.firebaseId || product.id;
+            window.location.href = `edit-product.html?id=${productId}`;
         }
 
-        function deleteProduct(id) {
-            deleteProductId = id;
+        function deleteProduct(product) {
+            // Use firebaseId if available, otherwise use id
+            deleteProductId = product.firebaseId || product.id;
             document.getElementById('deleteModal').classList.remove('hidden');
         }
 
