@@ -12,6 +12,7 @@ const firebaseConfig = {
   measurementId: "G-SN9TH94YS2"
 };
 
+
 // Initialize Firebase (loaded from CDN)
 let database;
 let productsRef;
