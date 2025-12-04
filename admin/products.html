@@ -14,8 +14,12 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Include database -->
-    <script src="../database/db.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script src="../database/firebase-config.js"></script>
 
     <script>
         tailwind.config = {
@@ -239,9 +243,20 @@
         // Initialize
         async function init() {
             try {
-                db = await productDB.init();
-                await loadProducts();
-                setupEventListeners();
+                // Check if productDB is available
+                if (typeof productDB !== 'undefined') {
+                    await loadProducts();
+                    setupEventListeners();
+
+                    // Set up real-time listener
+                    productDB.onProductsChanged((updatedProducts) => {
+                        allProducts = updatedProducts;
+                        filterProducts();
+                    });
+                } else {
+                    console.error('Firebase productDB not initialized');
+                    showNotification('Gagal memuat database', 'error');
+                }
             } catch (error) {
                 console.error('Failed to initialize:', error);
                 showNotification('Gagal memuat database', 'error');

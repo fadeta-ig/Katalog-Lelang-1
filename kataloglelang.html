@@ -34,6 +34,13 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script src="database/firebase-config.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -246,29 +253,37 @@
         </div>
     </div>
 
-    <!-- Include Database -->
-    <script src="database/db.js"></script>
-
     <!-- JavaScript Data & Logic -->
     <script>
         // Initialize database
-        let db;
         let allProducts = [];
         let lelangProducts = [];
 
-        // Load products from database
+        // Load products from Firebase
         async function loadProducts() {
             try {
-                db = await productDB.init();
-                allProducts = await productDB.getAllProducts();
+                // Check if productDB is initialized (from firebase-config.js)
+                if (typeof productDB !== 'undefined') {
+                    allProducts = await productDB.getAllProducts();
 
-                // Filter products with status 'Lelang' or 'Peremajaan' for catalog
-                lelangProducts = allProducts.filter(p => p.status === 'Lelang' || p.status === 'Peremajaan');
+                    // Filter products with status 'Lelang' or 'Peremajaan' for catalog
+                    lelangProducts = allProducts.filter(p => p.status === 'Lelang' || p.status === 'Peremajaan');
 
-                renderProducts(lelangProducts);
-                setupEventListeners();
+                    renderProducts(lelangProducts);
+                    setupEventListeners();
+
+                    // Set up real-time listener for updates
+                    productDB.onProductsChanged((updatedProducts) => {
+                        allProducts = updatedProducts;
+                        lelangProducts = allProducts.filter(p => p.status === 'Lelang' || p.status === 'Peremajaan');
+                        applyFilters();
+                    });
+                } else {
+                    console.error('Firebase productDB not initialized');
+                    useFallbackData();
+                }
             } catch (error) {
-                console.error('Error loading products:', error);
+                console.error('Error loading products from Firebase:', error);
                 // Show fallback data if database fails
                 useFallbackData();
             }
